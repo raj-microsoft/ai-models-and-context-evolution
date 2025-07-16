@@ -1,25 +1,6 @@
-
 # AI Context Evolution Workshop: The Journey to MCP
 
-This workshop demonstrates the evolution of providing context to AI models, from basic chat to function calling, s## 📞 Quick Test Checklist
-
-- `01-static-context-via-system-prompts.http`: Static prompt limitations
-- `02-dynamic-context-multi-turn-conversation.http`: Dynamic progression
-- `04-modern-tools-current-best-practice.http`: Function calling capabilities
-- `07-assistants-api-with-document-search.http`: Assistants + Vector Store
-- `08-complete-rag-workflow-with-embeddings.http`: Full RAG workflow
-
-## 🎯 What Makes This Workshop Special
-
-It's not just about calling tools—it's about understanding **why** context matters, **how** approaches evolved, and **what challenges** led to the creation of MCP.
-
-## 🔗 Continue Your Journey
-
-**Ready to see how MCP revolutionizes everything you've learned here?**
-
-👉 **[Microsoft MCP for Beginners](https://github.com/microsoft/mcp-for-beginners)**
-
-This next step will show you how MCP addresses every limitation and challenge you've experienced in this workshop, providing a unified, standardized approach to AI context and tool integration.e arrived at the need for the Model Context Protocol (MCP). This is a **foundational learning experience** that prepares you for the next step: diving deep into MCP itself.
+This workshop demonstrates the evolution of providing context to AI models, from basic chat to function calling, and how we arrived at the need for the Model Context Protocol (MCP). This is a **foundational learning experience** that prepares you for the next step: diving deep into MCP itself.
 
 ## 🎯 Workshop Objectives
 
@@ -47,21 +28,22 @@ This comprehensive guide will teach you how to:
 ```
 ai-context-evolution-workshop/
 ├── http-examples/                  # REST Client examples showing progression
-│   ├── 01-static-context-via-system-prompts.http
-│   ├── 02-dynamic-context-multi-turn-conversation.http
-│   ├── 03-legacy-function-calling-deprecated.http
-│   ├── 04-modern-tools-current-best-practice.http
-│   ├── 05-parallel-multiple-tool-execution.http
-│   ├── 06-complete-tool-calling-workflow.http
-│   ├── 07-assistants-api-with-document-search.http
-│   └── 08-complete-rag-workflow-with-embeddings.http
+│   ├── 01_static_context_via_system_prompts.http
+│   ├── 02_dynamic_context_multi_turn_conversation.http
+│   ├── 03_legacy_function_calling_deprecated.http
+│   ├── 04_modern_tools_current_best_practice.http
+│   ├── 05_parallel_multiple_tool_execution.http
+│   ├── 06_complete_tool_calling_workflow.http
+│   ├── 07_assistants_api_with_document_search.http
+│   └── 08_complete_rag_workflow_with_embeddings.http
 ├── notebooks/                      # Jupyter notebooks for deep exploration
 │   ├── 01_context_methods_and_prompting.ipynb
 │   ├── 02_function_calling_legacy_format.ipynb
 │   ├── 03_function_calling_modern_tools.ipynb
 │   ├── 04_parallel_multiple_tool_execution.ipynb
 │   ├── 05_assistants_api_with_vector_stores.ipynb
-│   └── 06_complete_rag_pipeline_deep_dive.ipynb
+│   ├── 06_complete_rag_pipeline_deep_dive.ipynb
+│   └── sample_knowledge_base_document.txt
 ├── assets/
 │   └── conference_session_data_sample.json
 ├── .vscode/
@@ -124,23 +106,23 @@ pip install -r requirements.txt
 
 ### 5. Explore the Notebooks
 
-- Start with `notebooks/01_basic_context_methods.ipynb`
+- Start with `notebooks/01_context_methods_and_prompting.ipynb`
 - Follow the sequence to build understanding step-by-step
 
 ## 📚 Learning Path
 
 ### Phase 1: Understanding Context Evolution
 
-- `01-static-context-via-system-prompts.http`
-- `02-dynamic-context-multi-turn-conversation.http`
+- `01_static_context_via_system_prompts.http`
+- `02_dynamic_context_multi_turn_conversation.http`
 - `notebooks/01_context_methods_and_prompting.ipynb`
 
 ### Phase 2: Function Calling Evolution
 
-- `03-legacy-function-calling-deprecated.http`
-- `04-modern-tools-current-best-practice.http`
-- `05-parallel-multiple-tool-execution.http`
-- `06-complete-tool-calling-workflow.http`
+- `03_legacy_function_calling_deprecated.http`
+- `04_modern_tools_current_best_practice.http`
+- `05_parallel_multiple_tool_execution.http`
+- `06_complete_tool_calling_workflow.http`
 
 ### Phase 3: Deep Dive Notebooks
 
@@ -150,9 +132,9 @@ pip install -r requirements.txt
 
 ### Phase 4: Document Intelligence & RAG
 
-- `07-assistants-api-with-document-search.http`
+- `07_assistants_api_with_document_search.http`
 - `notebooks/05_assistants_api_with_vector_stores.ipynb`
-- `08-complete-rag-workflow-with-embeddings.http`
+- `08_complete_rag_workflow_with_embeddings.http`
 - `notebooks/06_complete_rag_pipeline_deep_dive.ipynb`
 
 ### Phase 5: Ready for MCP!
@@ -189,16 +171,15 @@ By the end of this workshop, you'll understand:
 
 ## 📞 Quick Test Checklist
 
-- `01-basic-chat.http`: See limited capabilities
-- `02-system-prompt-context.http`: Static prompt
-- `03-multi-turn-context.http`: Dynamic progression
-- `05-modern-tools.http`: Function calling
-- `08-assistants-vector-store.http`: Assistants + Vector Store
-- `09-rag-with-embeddings.http`: Full RAG workflow
+- `01_static_context_via_system_prompts.http`: Static prompt limitations
+- `02_dynamic_context_multi_turn_conversation.http`: Dynamic progression
+- `04_modern_tools_current_best_practice.http`: Function calling capabilities
+- `07_assistants_api_with_document_search.http`: Assistants + Vector Store
+- `08_complete_rag_workflow_with_embeddings.http`: Full RAG workflow
 
 ## 🎯 What Makes This Workshop Special
 
-It’s not just about calling tools—it’s about **why** context matters and **how** MCP changes everything.
+It's not just about calling tools—it's about understanding **why** context matters, **how** approaches evolved, and **what challenges** led to the creation of MCP.
 
 ## ❓ Frequently Asked Questions (FAQ)
 
@@ -253,6 +234,14 @@ It’s not just about calling tools—it’s about **why** context matters and *
 | Custom systems   | Function Calling   | Full control                  |
 | Prototypes       | Assistants API     | Quick setup                   |
 
+## 🔗 Continue Your Journey
+
+**Ready to see how MCP revolutionizes everything you've learned here?**
+
+👉 **[Microsoft MCP for Beginners](https://github.com/microsoft/mcp-for-beginners)**
+
+This next step will show you how MCP addresses every limitation and challenge you've experienced in this workshop, providing a unified, standardized approach to AI context and tool integration.
+
 ---
 
-Ready to understand how we went from limited AI to unlimited possibilities? **Let’s dive in!** 🚀
+Ready to understand how we went from limited AI to unlimited possibilities? **Let's dive in!** 🚀
