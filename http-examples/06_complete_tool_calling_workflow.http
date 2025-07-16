@@ -1,0 +1,196 @@
+# 05 - Combined Request and Tool Responses
+#
+# This file demonstrates the complete two-step process:
+# 1. First request: User asks question, AI decides which tools to call
+# 2. Second request: Send conversation + tool results back to get final answer
+
+### Step 1: Initial Request - AI Decides Which Tools to Call
+POST {{AZURE_OPENAI_ENDPOINT}}openai/deployments/{{AZURE_OPENAI_GPT4O_DEPLOYMENT_NAME}}/chat/completions?api-version={{AZURE_OPENAI_GPT4O_API_VERSION}}
+Content-Type: application/json
+api-key: {{AZURE_OPENAI_API_KEY}}
+
+{
+  "messages": [
+    {
+      "role": "user",
+      "content": "I'm planning a trip from New York to Tokyo. Can you tell me the weather in both cities, what time it is there, and how long it takes to fly between them?"
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "get_current_weather",
+        "description": "Get the current weather in a given location",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "location": {
+              "type": "string",
+              "description": "The city and state/country, e.g. San Francisco, CA"
+            },
+            "unit": {
+              "type": "string",
+              "enum": ["celsius", "fahrenheit"],
+              "description": "Temperature unit"
+            }
+          },
+          "required": ["location"]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "get_current_time",
+        "description": "Get the current time for a specific timezone",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "timezone": {
+              "type": "string",
+              "description": "The timezone, e.g. Europe/Amsterdam, Asia/Tokyo"
+            }
+          },
+          "required": ["timezone"]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "get_travel_info",
+        "description": "Get travel information between two cities",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "from_city": {
+              "type": "string",
+              "description": "Departure city"
+            },
+            "to_city": {
+              "type": "string", 
+              "description": "Destination city"
+            },
+            "travel_mode": {
+              "type": "string",
+              "enum": ["flight", "train", "driving"],
+              "description": "Mode of transportation"
+            }
+          },
+          "required": ["from_city", "to_city"]
+        }
+      }
+    }
+  ],
+  "tool_choice": "auto",
+  "max_tokens": 1000,
+  "temperature": 0.3
+}
+
+###
+
+### Step 2: Complete Conversation with Tool Results
+### After Step 1, you execute the tools and send this complete conversation back
+POST {{AZURE_OPENAI_ENDPOINT}}openai/deployments/{{AZURE_OPENAI_GPT4O_DEPLOYMENT_NAME}}/chat/completions?api-version={{AZURE_OPENAI_GPT4O_API_VERSION}}
+Content-Type: application/json
+api-key: {{AZURE_OPENAI_API_KEY}}
+
+{
+  "messages": [
+    {
+      "role": "user",
+      "content": "I'm planning a trip from New York to Tokyo. Can you tell me the weather in both cities, what time it is there, and how long it takes to fly between them?"
+    },
+    {
+      "role": "assistant",
+      "tool_calls": [
+        {
+          "id": "call_WeatherNYC",
+          "type": "function",
+          "function": {
+            "name": "get_current_weather",
+            "arguments": "{\"location\": \"New York\"}"
+          }
+        },
+        {
+          "id": "call_WeatherTokyo",
+          "type": "function",
+          "function": {
+            "name": "get_current_weather",
+            "arguments": "{\"location\": \"Tokyo\"}"
+          }
+        },
+        {
+          "id": "call_TimeNYC",
+          "type": "function",
+          "function": {
+            "name": "get_current_time",
+            "arguments": "{\"timezone\": \"America/New_York\"}"
+          }
+        },
+        {
+          "id": "call_TimeTokyo",
+          "type": "function",
+          "function": {
+            "name": "get_current_time",
+            "arguments": "{\"timezone\": \"Asia/Tokyo\"}"
+          }
+        },
+        {
+          "id": "call_TravelInfo",
+          "type": "function",
+          "function": {
+            "name": "get_travel_info",
+            "arguments": "{\"from_city\": \"New York\", \"to_city\": \"Tokyo\", \"travel_mode\": \"flight\"}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_WeatherNYC",
+      "content": "{\"location\": \"New York\", \"temperature\": \"22\", \"unit\": \"celsius\", \"description\": \"Sunny\"}"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_WeatherTokyo",
+      "content": "{\"location\": \"Tokyo\", \"temperature\": \"28\", \"unit\": \"celsius\", \"description\": \"Hot and humid\"}"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_TimeNYC",
+      "content": "{\"timezone\": \"America/New_York\", \"current_time\": \"2025-07-03T09:00:00\", \"utc_offset\": \"-05:00\"}"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_TimeTokyo",
+      "content": "{\"timezone\": \"Asia/Tokyo\", \"current_time\": \"2025-07-03T22:00:00\", \"utc_offset\": \"+09:00\"}"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_TravelInfo",
+      "content": "{\"from_city\": \"New York\", \"to_city\": \"Tokyo\", \"travel_mode\": \"flight\", \"duration\": \"14 hours\", \"distance\": \"10,850 km\"}"
+    }
+  ],
+  "max_tokens": 1200,
+  "temperature": 0.7
+}
+
+###
+
+# 🎯 Understanding the Two-Step Process:
+#
+# Step 1: Initial Request
+# - User asks question
+# - Include all available tools in "tools" array
+# - AI analyzes question and decides which tools to call
+# - Response contains tool_calls array with the AI's decisions
+#
+# Step 2: Complete Conversation
+# - Include original user message
+# - Include assistant's tool_calls from Step 1
+# - Include all tool execution results with matching tool_call_ids
+# - AI synthesizes final answer from all the tool results
+#
+# This demonstrates the complete modern function calling workflow!

@@ -1,0 +1,94 @@
+# 04 - Multiple Tool Calls (Advanced)
+#
+# 🚀 This demonstrates the REAL POWER of modern function calling
+# 💫 Key advantages over legacy format:
+#    - AI can call MULTIPLE tools simultaneously
+#    - Single API request instead of multiple round-trips
+#    - Dramatically improved performance and efficiency
+#    - Each tool call gets unique tracking ID (tool_call_id)
+#
+# 🎯 Try this request and notice how the AI might call multiple tools at once!
+# 📊 Compare with legacy format - this would require 6+ separate API calls!
+
+POST {{AZURE_OPENAI_ENDPOINT}}openai/deployments/{{AZURE_OPENAI_GPT4O_DEPLOYMENT_NAME}}/chat/completions?api-version={{AZURE_OPENAI_GPT4O_API_VERSION}}
+Content-Type: application/json
+api-key: {{AZURE_OPENAI_API_KEY}}
+
+{
+  "messages": [
+    {
+      "role": "user",
+      "content": "I'm planning a trip from New York to Tokyo. Can you tell me the weather in both cities, what time it is there, and how long it takes to fly between them?"
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "get_current_weather",
+        "description": "Get the current weather in a given location",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "location": {
+              "type": "string",
+              "description": "The city and state/country, e.g. San Francisco, CA"
+            },
+            "unit": {
+              "type": "string",
+              "enum": ["celsius", "fahrenheit"],
+              "description": "Temperature unit"
+            }
+          },
+          "required": ["location"]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "get_current_time",
+        "description": "Get the current time for a specific timezone",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "timezone": {
+              "type": "string",
+              "description": "The timezone, e.g. Europe/Amsterdam, Europe/London, Asia/Tokyo"
+            }
+          },
+          "required": ["timezone"]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "get_travel_info",
+        "description": "Get travel information between two cities",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "from_city": {
+              "type": "string",
+              "description": "Departure city"
+            },
+            "to_city": {
+              "type": "string", 
+              "description": "Destination city"
+            },
+            "travel_mode": {
+              "type": "string",
+              "enum": ["flight", "train", "driving"],
+              "description": "Mode of transportation"
+            }
+          },
+          "required": ["from_city", "to_city"]
+        }
+      }
+    }
+  ],
+  "tool_choice": "auto",
+  "max_tokens": 1200,
+  "temperature": 0.3
+}

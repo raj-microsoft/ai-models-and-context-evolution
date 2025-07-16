@@ -1,0 +1,70 @@
+# 03 - Modern Function Calling (RECOMMENDED)
+#
+# ✅ This is the CURRENT best practice for function calling
+# 🚀 Modern format advantages:
+#    - Multiple simultaneous tool calls possible
+#    - Better performance and lower costs
+#    - Cleaner response format with tool_call_id tracking
+#    - Future-proof and actively maintained
+#
+# Modern Format Uses:
+# - "tools" parameter (array of tool definitions)
+# - "tool_choice" parameter (controls when to use tools)
+# - Response contains "tool_calls" array with unique IDs
+
+POST {{AZURE_OPENAI_ENDPOINT}}openai/deployments/{{AZURE_OPENAI_GPT4O_DEPLOYMENT_NAME}}/chat/completions?api-version={{AZURE_OPENAI_GPT4O_API_VERSION}}
+Content-Type: application/json
+api-key: {{AZURE_OPENAI_API_KEY}}
+
+{
+  "messages": [
+    {
+      "role": "user",
+      "content": "What's the weather like in Amsterdam and what time is it there?"
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "get_current_weather",
+        "description": "Get the current weather in a given location",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "location": {
+              "type": "string",
+              "description": "The city and state/country, e.g. San Francisco, CA"
+            },
+            "unit": {
+              "type": "string",
+              "enum": ["celsius", "fahrenheit"],
+              "description": "Temperature unit"
+            }
+          },
+          "required": ["location"]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "get_current_time",
+        "description": "Get the current time for a specific timezone",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "timezone": {
+              "type": "string",
+              "description": "The timezone, e.g. Europe/Amsterdam, Asia/Tokyo"
+            }
+          },
+          "required": ["timezone"]
+        }
+      }
+    }
+  ],
+  "tool_choice": "auto",
+  "max_tokens": 800,
+  "temperature": 0.7
+}

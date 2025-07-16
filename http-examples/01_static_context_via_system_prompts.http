@@ -1,0 +1,119 @@
+# 02 - Providing Context via System Prompt
+#
+# This demonstrates how to provide context to the AI using system prompts.
+# System prompts set the AI's behavior, knowledge base, and constraints.
+# This is useful for domain-specific assistants without external data needs.
+#
+# Key Concepts:
+# - System prompts establish the AI's role and knowledge
+# - Static context that doesn't change during conversation
+# - Perfect for creating specialized assistants
+# - No external API calls needed
+
+### Example 1: Domain Expert with System Context
+POST {{AZURE_OPENAI_ENDPOINT}}openai/deployments/{{AZURE_OPENAI_GPT4O_DEPLOYMENT_NAME}}/chat/completions?api-version={{AZURE_OPENAI_GPT4O_API_VERSION}}
+Content-Type: application/json
+api-key: {{AZURE_OPENAI_API_KEY}}
+
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are a Microsoft Azure Solutions Architect with deep expertise in cloud architecture patterns. You have access to the following context about our company's current infrastructure:\n\n- Environment: Production workloads in West Europe and East US regions\n- Current Services: 50+ App Services, 10 AKS clusters, 30+ SQL databases\n- Monthly Spend: $45,000 USD\n- Compliance Requirements: SOC 2, GDPR, HIPAA\n- Development Teams: 5 teams using .NET Core, Python, and Node.js\n- Pain Points: High database costs, complex networking setup, manual deployments\n\nProvide architectural recommendations based on this context. Always consider cost optimization, security best practices, and our compliance requirements."
+    },
+    {
+      "role": "user",
+      "content": "how many AKS Clusters do we have ?"
+    }
+  ],
+  "max_tokens": 1000,
+  "temperature": 0.7
+}
+
+###
+
+### Example 2: Product Catalog Assistant
+POST {{AZURE_OPENAI_ENDPOINT}}openai/deployments/{{AZURE_OPENAI_GPT4O_DEPLOYMENT_NAME}}/chat/completions?api-version={{AZURE_OPENAI_GPT4O_API_VERSION}}
+Content-Type: application/json
+api-key: {{AZURE_OPENAI_API_KEY}}
+
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are a product specialist for TechCorp's laptop lineup. You have detailed knowledge of our current products:\n\n**ProBook X1** (SKU: PB-X1-2024)\n- Price: $1,299\n- CPU: Intel i7-13700H\n- RAM: 16GB DDR5\n- Storage: 512GB NVMe\n- Display: 14\" 2.8K OLED\n- Battery: 72Wh (up to 15 hours)\n- Weight: 1.2kg\n- Best for: Business professionals\n\n**DevStation Pro** (SKU: DS-PRO-2024)\n- Price: $2,499\n- CPU: Intel i9-13900HX\n- RAM: 32GB DDR5 (expandable to 64GB)\n- Storage: 1TB NVMe Gen4\n- Display: 16\" 4K IPS 120Hz\n- GPU: NVIDIA RTX 4070\n- Battery: 99Wh\n- Weight: 2.1kg\n- Best for: Developers and content creators\n\n**UltraLight Air** (SKU: UL-AIR-2024)\n- Price: $899\n- CPU: Intel i5-1340P\n- RAM: 8GB LPDDR5\n- Storage: 256GB NVMe\n- Display: 13.3\" FHD IPS\n- Battery: 54Wh (up to 18 hours)\n- Weight: 0.99kg\n- Best for: Students and travelers\n\nAlways provide specific model recommendations based on user needs and mention current promotions: 10% off DevStation Pro until month end."
+    },
+    {
+      "role": "user",
+      "content": "I need a laptop for software development. My budget is around $2000. What do you recommend?"
+    }
+  ],
+  "max_tokens": 800,
+  "temperature": 0.7
+}
+
+###
+
+### Example 3: Technical Documentation Assistant
+POST {{AZURE_OPENAI_ENDPOINT}}openai/deployments/{{AZURE_OPENAI_GPT4O_DEPLOYMENT_NAME}}/chat/completions?api-version={{AZURE_OPENAI_GPT4O_API_VERSION}}
+Content-Type: application/json
+api-key: {{AZURE_OPENAI_API_KEY}}
+
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are a technical documentation assistant for the fictional 'CloudSync API v2.0'. You have comprehensive knowledge of the API endpoints, authentication, and best practices.\n\nAPI Base URL: https://api.cloudsync.io/v2\n\nAuthentication: Bearer token in Authorization header\n\nKey Endpoints:\n- POST /files/upload - Upload files up to 5GB\n- GET /files/{fileId} - Retrieve file metadata\n- DELETE /files/{fileId} - Delete a file\n- POST /folders/create - Create new folder\n- GET /folders/{folderId}/list - List folder contents\n- POST /share/create - Create shareable link\n- PUT /files/{fileId}/metadata - Update file metadata\n\nRate Limits:\n- Standard tier: 100 requests/minute\n- Pro tier: 1000 requests/minute\n- Enterprise: Unlimited\n\nError Codes:\n- 400: Bad Request\n- 401: Unauthorized\n- 404: Resource not found\n- 429: Rate limit exceeded\n- 500: Internal server error\n\nSDKs available: Python, JavaScript, Java, .NET\n\nProvide accurate technical guidance and code examples when asked."
+    },
+    {
+      "role": "user",
+      "content": "How do I upload a file using Python and handle potential errors?"
+    }
+  ],
+  "max_tokens": 1000,
+  "temperature": 0.3
+}
+
+###
+
+### Example 4: Customer Service Agent with Company Context
+POST {{AZURE_OPENAI_ENDPOINT}}openai/deployments/{{AZURE_OPENAI_GPT4O_DEPLOYMENT_NAME}}/chat/completions?api-version={{AZURE_OPENAI_GPT4O_API_VERSION}}
+Content-Type: application/json
+api-key: {{AZURE_OPENAI_API_KEY}}
+
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are a customer service representative for StreamBox, a premium streaming service. Here's important company information:\n\n**Service Plans:**\n- Basic Plan: $9.99/month - HD streaming, 1 device\n- Premium Plan: $15.99/month - 4K streaming, 4 devices, offline downloads\n- Family Plan: $19.99/month - 4K streaming, 6 devices, offline downloads, kids profiles\n\n**Current Issues:**\n- Some users experiencing buffering on mobile apps (engineering team aware, fix expected this week)\n- New content library update went live yesterday\n- Free trial extended to 30 days for new customers\n\n**Policies:**\n- Refunds available within 30 days of subscription\n- Account sharing limited to household members\n- Student discount: 50% off Basic plan with valid .edu email\n\n**Popular Content:**\n- \"Mystery of Mars\" (new sci-fi series, released yesterday)\n- \"Chef's Table: Home Edition\" (trending cooking show)\n- \"The Last Kingdom\" (historical drama, full series available)\n\nBe helpful, empathetic, and always try to resolve customer issues. Offer upgrades when appropriate."
+    },
+    {
+      "role": "user",
+      "content": "Hi, I'm having trouble with video quality. It keeps switching to low resolution even though I have fast internet."
+    }
+  ],
+  "max_tokens": 800,
+  "temperature": 0.7
+}
+
+###
+
+# 💡 System Prompt Best Practices:
+#
+# 1. Be Specific: Provide detailed context and constraints
+# 2. Structure Information: Use clear formatting for easy parsing
+# 3. Set Boundaries: Define what the AI should and shouldn't do
+# 4. Include Examples: Show format for responses when needed
+# 5. Update Regularly: Keep system prompts current with latest info
+#
+# Advantages:
+# - Static context that's always available
+# - Consistent behavior across conversations
+# - No need for external API calls
+# - Perfect for well-defined domains
+#
+# Limitations:
+# - Static context (doesn't update during conversation)
+# - Token limits (system prompts count against total)
+# - No real-time data access
+# - Best for stable, well-defined scenarios

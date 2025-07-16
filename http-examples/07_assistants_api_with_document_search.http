@@ -1,0 +1,251 @@
+# 06 - Azure OpenAI Assistants with Vector Store
+#
+# This demonstrates creating an Assistant with Vector Store capabilities for document-based Q&A.
+# Unlike function calling which accesses real-time APIs, this approach uploads documents
+# and enables semantic search through the content.
+#
+# Key Features:
+# - 🤖 Persistent Assistant with specialized instructions
+# - 📚 Vector Store for document embeddings
+# - 🔍 Semantic search through uploaded files
+# - 💬 Conversational memory across multiple interactions
+# - 📊 Complex analysis of document content
+#
+# 🔄 Variables Used:
+# - {{assistantID}} - Automatically captured from Step 1
+# - {{vectorStoreID}} - Automatically captured from Step 2
+# - {{fileID}} - Automatically captured from Step 3
+# - {{threadID}} - Automatically captured from Step 6
+# - {{runID}} - Automatically captured from Step 8
+
+### Step 1: Create an Assistant
+### Creates a specialized assistant for analyzing conference session data
+
+# @name assistantsAPI
+POST {{AZURE_OPENAI_ENDPOINT}}openai/assistants?api-version=2025-04-01-preview
+Content-Type: application/json
+api-key: {{AZURE_OPENAI_API_KEY}}
+
+{
+  "name": "Conference Session Assistant ( REST API )",
+  "instructions": "You are a Conference Session Assistant specialized in analyzing Microsoft conference data. Your capabilities: - Analyze conference sessions, speakers, topics, and schedules - Help users find relevant sessions based on their interests - Provide insights about session types, levels, and locations - Answer questions about speakers, timeslots, and session content - Suggest related sessions and create learning paths. Always provide clear, helpful responses with specific session details, session codes and titles when referencing specific sessions, time slots and locations when relevant, and speaker names when discussing sessions. Be conversational, helpful, and focus on helping users navigate the conference content effectively.",
+  "model": "{{AZURE_OPENAI_GPT4O_DEPLOYMENT_NAME}}",
+  "tools": [{"type": "file_search"}],
+  "temperature": 0.3
+}
+###
+
+### Step 2: Create a Vector Store
+### Creates a vector store to hold document embeddings
+
+# @name vectorStoreAPI
+POST {{AZURE_OPENAI_ENDPOINT}}openai/vector_stores?api-version=2025-04-01-preview
+Content-Type: application/json
+api-key: {{AZURE_OPENAI_API_KEY}}
+
+{
+  "name": "Conference Sessions Knowledge Base",
+  "expires_after": {
+    "anchor": "last_active_at",
+    "days": 7
+  }
+}
+
+###
+
+### Step 3: Upload File
+### First upload the file to get a file_id
+
+# @name fileUploadAPI
+POST {{AZURE_OPENAI_ENDPOINT}}openai/files?api-version=2025-04-01-preview
+Content-Type: multipart/form-data; boundary=boundary
+api-key: {{AZURE_OPENAI_API_KEY}}
+
+--boundary
+Content-Disposition: form-data; name="file"; filename="session-all-en-us.json"
+
+< ../assets/session-all-en-us.json
+--boundary
+Content-Disposition: form-data; name="purpose"
+
+assistants
+--boundary--
+
+
+###
+
+### Step 4: Add File to Vector Store
+### Uses the fileID from Step 3 and vectorStoreID from Step 2
+
+@vectorStoreID={{vectorStoreAPI.response.body.id}}
+@fileID={{fileUploadAPI.response.body.id}}
+POST {{AZURE_OPENAI_ENDPOINT}}openai/vector_stores/{{vectorStoreID}}/files?api-version=2025-04-01-preview
+Content-Type: application/json
+api-key: {{AZURE_OPENAI_API_KEY}}
+
+{
+  "file_id": "{{fileID}}"
+}
+
+
+###
+
+### Step 5: Update Assistant with Vector Store
+### Uses assistantID from Step 1 and vectorStoreID from Step 2
+
+@assistantID={{assistantsAPI.response.body.id}}
+POST {{AZURE_OPENAI_ENDPOINT}}openai/assistants/{{assistantID}}?api-version=2025-04-01-preview
+Content-Type: application/json
+api-key: {{AZURE_OPENAI_API_KEY}}
+
+{
+  "tool_resources": {
+    "file_search": {
+      "vector_store_ids": ["{{vectorStoreID}}"]
+    }
+  }
+}
+
+###
+
+### Step 6: Create a Thread
+### Creates a conversation thread for multi-turn interactions
+
+# @name threadAPI
+POST {{AZURE_OPENAI_ENDPOINT}}openai/threads?api-version=2025-04-01-preview
+Content-Type: application/json
+api-key: {{AZURE_OPENAI_API_KEY}}
+
+{}
+
+
+###
+
+### Step 7: Add Message to Thread
+### Uses threadID from Step 6
+
+@threadID={{threadAPI.response.body.id}}
+POST {{AZURE_OPENAI_ENDPOINT}}openai/threads/{{threadID}}/messages?api-version=2025-04-01-preview
+Content-Type: application/json
+api-key: {{AZURE_OPENAI_API_KEY}}
+
+{
+  "role": "user",
+  "content": "Tell me about BRK153"
+}
+
+
+###
+
+### Step 8: Run the Assistant
+### Uses threadID from Step 6 and assistantID from Step 1
+# @name runAPI
+POST {{AZURE_OPENAI_ENDPOINT}}openai/threads/{{threadID}}/runs?api-version=2025-04-01-preview
+Content-Type: application/json
+api-key: {{AZURE_OPENAI_API_KEY}}
+
+{
+  "assistant_id": "{{assistantID}}"
+}
+
+###
+
+### Step 9: Check Run Status
+### Uses threadID and runID from previous steps
+### Keep calling this until status is "completed"
+
+@runID={{runAPI.response.body.id}}
+GET {{AZURE_OPENAI_ENDPOINT}}openai/threads/{{threadID}}/runs/{{runID}}?api-version=2025-04-01-preview
+api-key: {{AZURE_OPENAI_API_KEY}}
+
+###
+
+### Step 10: Get Assistant's Response
+### Uses threadID from Step 6
+
+GET {{AZURE_OPENAI_ENDPOINT}}openai/threads/{{threadID}}/messages?order=desc&limit=1&api-version=2025-04-01-preview
+api-key: {{AZURE_OPENAI_API_KEY}}
+
+
+###
+
+### More Example Questions to Try: 
+### After every question below, go to step 8 to run the assistant again
+### the message will be added to the same thread created in Step 6 and assistant needs to run again to get the response
+
+### Find AI/ML Sessions
+POST {{AZURE_OPENAI_ENDPOINT}}openai/threads/{{threadID}}/messages?api-version=2025-04-01-preview
+Content-Type: application/json
+api-key: {{AZURE_OPENAI_API_KEY}}
+
+{
+  "role": "user",
+  "content": "can you find agentic ai sessions ?"
+}
+
+###
+
+### Ask About Labs
+POST {{AZURE_OPENAI_ENDPOINT}}openai/threads/{{threadID}}/messages?api-version=2025-04-01-preview
+Content-Type: application/json
+api-key: {{AZURE_OPENAI_API_KEY}}
+
+{
+  "role": "user",
+  "content": "What lab sessions are available? Show me the session codes, titles, and what I'll learn in each lab."
+}
+
+###
+
+### Data Analytics Recommendations
+POST {{AZURE_OPENAI_ENDPOINT}}openai/threads/{{threadID}}/messages?api-version=2025-04-01-preview
+Content-Type: application/json
+api-key: {{AZURE_OPENAI_API_KEY}}
+
+{
+  "role": "user",
+  "content": "I'm interested in data analytics and business intelligence. What sessions would you recommend? Include difficulty levels and speakers."
+}
+
+###
+
+### Complex Analysis Request
+POST {{AZURE_OPENAI_ENDPOINT}}openai/threads/{{threadID}}/messages?api-version=2025-04-01-preview
+Content-Type: application/json
+api-key: {{AZURE_OPENAI_API_KEY}}
+
+{
+  "role": "user",
+  "content": "Create a summary report: What are the top 5 most popular topics, how many sessions of each difficulty level (Beginner, Intermediate, Advanced), and what percentage are labs vs presentations?"
+}
+
+
+### Cleanup: Delete Assistant (Optional)
+### Replace {assistant_id} with the assistant ID
+
+# DELETE {{AZURE_OPENAI_ENDPOINT}}openai/assistants/{assistant_id}?api-version=2025-04-01-preview
+# api-key: {{AZURE_OPENAI_API_KEY}}
+
+###
+
+### Cleanup: Delete Vector Store (Optional)
+### Replace {vector_store_id} with the vector store ID
+
+# DELETE {{AZURE_OPENAI_ENDPOINT}}openai/vector_stores/{vector_store_id}?api-version=2025-04-01-preview
+# api-key: {{AZURE_OPENAI_API_KEY}}
+
+###
+
+# 🎯 Key Differences from Function Calling:
+#
+# Function Calling:
+# - Calls external APIs for real-time data
+# - Stateless interactions
+# - Perfect for live information and actions
+#
+# Assistants + Vector Store:
+# - Searches through uploaded documents
+# - Persistent conversational memory
+# - Perfect for document Q&A and analysis
+#
+# Both approaches can be combined for comprehensive AI solutions!

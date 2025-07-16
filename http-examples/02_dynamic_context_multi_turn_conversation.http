@@ -1,0 +1,202 @@
+# 03 - Building Context Through Multi-Turn Conversations
+#
+# This demonstrates how to provide context progressively through conversation.
+# Each message builds upon previous ones, creating a rich contextual understanding.
+# This approach is useful when context is dynamic or discovered during interaction.
+#
+# Key Concepts:
+# - Context accumulates through conversation history
+# - User can provide information progressively
+# - AI maintains conversation state across turns
+# - Flexible for exploratory scenarios
+
+### Example 1: Progressive Context Building - E-commerce Troubleshooting
+POST {{AZURE_OPENAI_ENDPOINT}}openai/deployments/{{AZURE_OPENAI_GPT4O_DEPLOYMENT_NAME}}/chat/completions?api-version={{AZURE_OPENAI_GPT4O_API_VERSION}}
+Content-Type: application/json
+api-key: {{AZURE_OPENAI_API_KEY}}
+
+{
+  "messages": [
+    {
+      "role": "user",
+      "content": "I'm working on a web application for my company."
+    },
+    {
+      "role": "assistant",
+      "content": "I'd be happy to help with your web application! To provide the best guidance, could you tell me more about:\n- What technology stack are you using?\n- What's the main purpose of the application?\n- Are there any specific challenges you're facing?"
+    },
+    {
+      "role": "user",
+      "content": "It's an e-commerce platform built with Next.js and Node.js. We're using PostgreSQL for the database and deploying on Azure. We have about 10,000 products and expect 5,000 daily active users."
+    },
+    {
+      "role": "assistant",
+      "content": "Great! An e-commerce platform with Next.js, Node.js, and PostgreSQL on Azure is a solid architecture. With 10,000 products and 5,000 DAU, you'll want to focus on performance and scalability. What specific aspect would you like help with? For example:\n- Performance optimization\n- Database design\n- Caching strategies\n- Azure deployment configuration\n- Search functionality\n- Payment integration"
+    },
+    {
+      "role": "user",
+      "content": "We're having issues with slow product search. Users complain it takes 3-5 seconds to get results. We're currently using LIKE queries in PostgreSQL."
+    }
+  ],
+  "max_tokens": 1000,
+  "temperature": 0.7
+}
+
+###
+
+### Example 2: Diagnostic Context Gathering - AKS Troubleshooting
+POST {{AZURE_OPENAI_ENDPOINT}}openai/deployments/{{AZURE_OPENAI_GPT4O_DEPLOYMENT_NAME}}/chat/completions?api-version={{AZURE_OPENAI_GPT4O_API_VERSION}}
+Content-Type: application/json
+api-key: {{AZURE_OPENAI_API_KEY}}
+
+{
+  "messages": [
+    {
+      "role": "user",
+      "content": "Our Azure Kubernetes Service cluster is experiencing issues."
+    },
+    {
+      "role": "assistant",
+      "content": "I'll help you troubleshoot your AKS cluster issues. To better understand the problem, could you provide:\n1. What symptoms are you observing? (pods not starting, network issues, performance problems, etc.)\n2. What's your cluster size and configuration?\n3. When did the issues start?\n4. Any recent changes or deployments?"
+    },
+    {
+      "role": "user",
+      "content": "Pods are randomly failing with OOMKilled errors. We have a 5-node cluster with Standard_D4s_v3 VMs. This started 2 days ago after we deployed a new version of our main API service."
+    },
+    {
+      "role": "assistant",
+      "content": "OOMKilled errors indicate your pods are exceeding their memory limits. Since this started after deploying your new API service, it's likely related to that change. Let me help you investigate:\n\n1. First, what are the current resource limits for your API service pods?\n2. How many replicas are you running?\n3. Did the new version introduce any memory-intensive features?\n\nTo gather data, you can run:\n```bash\nkubectl top pods -n <namespace> | grep <api-service-name>\nkubectl describe pod <pod-name> -n <namespace>\n```"
+    },
+    {
+      "role": "user",
+      "content": "We have 3 replicas with 512Mi memory limit each. The new version added image processing capabilities. The kubectl top shows pods using 480-510Mi before crashing."
+    }
+  ],
+  "max_tokens": 1000,
+  "temperature": 0.7
+}
+
+###
+
+### Example 3: Requirements Gathering - Notification System Design
+POST {{AZURE_OPENAI_ENDPOINT}}openai/deployments/{{AZURE_OPENAI_GPT4O_DEPLOYMENT_NAME}}/chat/completions?api-version={{AZURE_OPENAI_GPT4O_API_VERSION}}
+Content-Type: application/json
+api-key: {{AZURE_OPENAI_API_KEY}}
+
+{
+  "messages": [
+    {
+      "role": "user",
+      "content": "I need to build a notification system for our app."
+    },
+    {
+      "role": "assistant",
+      "content": "I'll help you design a notification system. Let's start by understanding your requirements:\n\n1. What types of notifications? (push, email, SMS, in-app)\n2. Expected volume of notifications?\n3. Real-time requirements?\n4. Target platforms? (web, mobile, both)\n5. Any compliance requirements?"
+    },
+    {
+      "role": "user",
+      "content": "We need email and push notifications. Probably 50,000 notifications per day. Real-time is important for some alerts. Both web and mobile. We're in healthcare so HIPAA compliance is required."
+    },
+    {
+      "role": "assistant",
+      "content": "For a HIPAA-compliant notification system handling 50k daily notifications with real-time requirements, here's my initial assessment:\n\n**Key Considerations:**\n- HIPAA requires end-to-end encryption and audit logs\n- No PHI in notification content\n- Secure storage of notification history\n\n**Architecture Questions:**\n1. What's your current tech stack?\n2. Do you have preference for cloud providers?\n3. Budget constraints?\n4. Do you need notification templates?\n5. Required delivery guarantees?"
+    },
+    {
+      "role": "user",
+      "content": "We use .NET Core with React. Already on Azure. Budget is flexible for the right solution. Yes, we need templates for consistent messaging. At-least-once delivery is required for critical alerts."
+    }
+  ],
+  "max_tokens": 1200,
+  "temperature": 0.7
+}
+
+###
+
+### Example 4: Learning User Preferences - Code Style Adaptation
+POST {{AZURE_OPENAI_ENDPOINT}}openai/deployments/{{AZURE_OPENAI_GPT4O_DEPLOYMENT_NAME}}/chat/completions?api-version={{AZURE_OPENAI_GPT4O_API_VERSION}}
+Content-Type: application/json
+api-key: {{AZURE_OPENAI_API_KEY}}
+
+{
+  "messages": [
+    {
+      "role": "user",
+      "content": "Show me how to connect to a database in Python."
+    },
+    {
+      "role": "assistant",
+      "content": "I'll show you how to connect to a database in Python. Which database system are you using? (PostgreSQL, MySQL, SQLite, MongoDB, etc.)"
+    },
+    {
+      "role": "user",
+      "content": "PostgreSQL"
+    },
+    {
+      "role": "assistant",
+      "content": "Here's how to connect to PostgreSQL in Python using psycopg2:\n\n```python\nimport psycopg2\nfrom psycopg2 import sql\n\n# Connection parameters\nconn = psycopg2.connect(\n    host=\"localhost\",\n    database=\"your_database\",\n    user=\"your_username\",\n    password=\"your_password\",\n    port=\"5432\"\n)\n\n# Create a cursor\ncur = conn.cursor()\n\n# Execute a query\ncur.execute(\"SELECT * FROM users LIMIT 5\")\nrows = cur.fetchall()\n\nfor row in rows:\n    print(row)\n\n# Close connections\ncur.close()\nconn.close()\n```\n\nDo you prefer using an ORM like SQLAlchemy, or raw SQL queries?"
+    },
+    {
+      "role": "user",
+      "content": "I prefer SQLAlchemy. Also, I always use environment variables for credentials and async operations when possible."
+    }
+  ],
+  "max_tokens": 1000,
+  "temperature": 0.7
+}
+
+###
+
+### Example 5: Customer Support Context Building
+POST {{AZURE_OPENAI_ENDPOINT}}openai/deployments/{{AZURE_OPENAI_GPT4O_DEPLOYMENT_NAME}}/chat/completions?api-version={{AZURE_OPENAI_GPT4O_API_VERSION}}
+Content-Type: application/json
+api-key: {{AZURE_OPENAI_API_KEY}}
+
+{
+  "messages": [
+    {
+      "role": "user",
+      "content": "I'm having trouble with my account."
+    },
+    {
+      "role": "assistant",
+      "content": "I'm here to help you with your account issue. To assist you better, could you please tell me:\n1. What specific problem are you experiencing?\n2. What service or application is this related to?\n3. When did you first notice this issue?"
+    },
+    {
+      "role": "user",
+      "content": "I can't log into my cloud storage account. It says my password is wrong, but I'm sure it's correct. This started this morning."
+    },
+    {
+      "role": "assistant",
+      "content": "I understand how frustrating login issues can be. Let's troubleshoot this step by step:\n\n1. Have you tried using the 'Forgot Password' option to reset it?\n2. Are you seeing any specific error messages beyond \"wrong password\"?\n3. Are you trying to log in from the same device/browser you normally use?\n4. Have you recently changed your password or enabled two-factor authentication?\n\nAlso, to better assist you, which cloud storage service are you using? (Google Drive, Dropbox, OneDrive, etc.)"
+    },
+    {
+      "role": "user",
+      "content": "It's OneDrive. I haven't tried password reset yet. The exact error is 'Sign-in failed. Please check your credentials.' I'm using Chrome on my work laptop like always. We did have a company-wide security update last week."
+    }
+  ],
+  "max_tokens": 1000,
+  "temperature": 0.7
+}
+
+###
+
+# 💡 Multi-Turn Context Best Practices:
+#
+# 1. Progressive Disclosure: Gather information naturally through conversation
+# 2. Maintain Context: Reference previous messages to show understanding
+# 3. Ask Clarifying Questions: Don't assume, ask for specifics
+# 4. Summarize Periodically: Confirm understanding of gathered context
+# 5. Adapt Responses: Tailor advice based on accumulated knowledge
+#
+# Advantages:
+# - Dynamic context building
+# - Natural conversation flow
+# - Can handle complex, evolving scenarios
+# - User controls information disclosure
+# - Flexible for exploratory interactions
+#
+# Limitations:
+# - Context window limits (older messages may be truncated)
+# - More tokens used for conversation history
+# - Requires multiple API calls
+# - Context lost between sessions unless saved

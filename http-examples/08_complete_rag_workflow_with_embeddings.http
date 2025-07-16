@@ -1,0 +1,195 @@
+### 09 - RAG (Retrieval-Augmented Generation) with Embeddings
+###
+### This example demonstrates a complete RAG workflow using REST Client variable syntax:
+### 1. Create embeddings for document chunks using # @name variables
+### 2. Store embeddings and simulate vector database operations
+### 3. Query with user question (embed the question)
+### 4. Find most similar documents using similarity calculations
+### 5. Use retrieved documents as context for GPT-4o generation
+###
+### 🎯 Learning Objectives:
+### - Understand the RAG pattern step-by-step
+### - See how embeddings enable semantic search
+### - Learn how to combine retrieval with generation
+### - Practice REST Client variable capture with # @name syntax
+
+### 📚 RAG Scenario: Azure OpenAI Knowledge Base
+### We'll create a mini knowledge base about Azure OpenAI best practices
+### and then answer questions using RAG
+
+##########################################################################
+### Step 1: Create Embeddings for Knowledge Base Documents
+##########################################################################
+
+### Document 1: Performance Best Practices
+# @name doc1Embedding
+POST {{AZURE_OPENAI_ENDPOINT}}/openai/deployments/{{AZURE_OPENAI_EMBEDDINGS_DEPLOYMENT_NAME}}/embeddings?api-version={{AZURE_OPENAI_EMBEDDINGS_API_VERSION}}
+Content-Type: application/json
+api-key: {{AZURE_OPENAI_API_KEY}}
+
+{
+    "input": "Azure OpenAI Performance Best Practices: Use connection pooling to reduce latency. Implement exponential backoff for rate limiting. Cache responses when possible. Monitor token usage to optimize costs. Use streaming for real-time applications. Consider model selection based on your use case - GPT-4o for complex reasoning, GPT-3.5 for faster responses.",
+    "model": "{{AZURE_OPENAI_EMBEDDINGS_DEPLOYMENT_NAME}}"
+}
+
+###
+
+### Document 2: Security Best Practices
+# @name doc2Embedding
+POST {{AZURE_OPENAI_ENDPOINT}}/openai/deployments/{{AZURE_OPENAI_EMBEDDINGS_DEPLOYMENT_NAME}}/embeddings?api-version={{AZURE_OPENAI_EMBEDDINGS_API_VERSION}}
+Content-Type: application/json
+api-key: {{AZURE_OPENAI_API_KEY}}
+
+{
+    "input": "Azure OpenAI Security Best Practices: Use Azure AD authentication and managed identities. Implement proper RBAC controls. Enable content filtering to prevent harmful content. Use private endpoints for network isolation. Regularly rotate API keys. Monitor access logs for suspicious activity. Implement input validation and sanitization.",
+    "model": "{{AZURE_OPENAI_EMBEDDINGS_DEPLOYMENT_NAME}}"
+}
+
+###
+
+### Document 3: Cost Management Best Practices
+# @name doc3Embedding
+POST {{AZURE_OPENAI_ENDPOINT}}/openai/deployments/{{AZURE_OPENAI_EMBEDDINGS_DEPLOYMENT_NAME}}/embeddings?api-version={{AZURE_OPENAI_EMBEDDINGS_API_VERSION}}
+Content-Type: application/json
+api-key: {{AZURE_OPENAI_API_KEY}}
+
+{
+    "input": "Azure OpenAI Cost Management: Monitor token usage with Azure Monitor. Set up billing alerts and quotas. Use prompt engineering to reduce token consumption. Choose appropriate models for your use case. Implement caching strategies. Use batch processing when possible. Consider using smaller models for simple tasks.",
+    "model": "{{AZURE_OPENAI_EMBEDDINGS_DEPLOYMENT_NAME}}"
+}
+
+##########################################################################
+### Step 2: User Query - Create Embedding for Search
+##########################################################################
+
+### User asks a question about Azure OpenAI
+# @name queryEmbedding
+POST {{AZURE_OPENAI_ENDPOINT}}/openai/deployments/{{AZURE_OPENAI_EMBEDDINGS_DEPLOYMENT_NAME}}/embeddings?api-version={{AZURE_OPENAI_EMBEDDINGS_API_VERSION}}
+Content-Type: application/json
+api-key: {{AZURE_OPENAI_API_KEY}}
+
+{
+    "input": "How can I reduce costs when using Azure OpenAI?",
+    "model": "{{AZURE_OPENAI_EMBEDDINGS_DEPLOYMENT_NAME}}"
+}
+
+##########################################################################
+### Step 3: RAG Generation - Use Retrieved Context with GPT-4o
+##########################################################################
+
+### Generate answer using retrieved documents as context
+### 🔍 This step would normally include similarity search logic
+### For simplicity in REST Client, we're using the cost management document
+### as it's most relevant to the cost reduction question
+
+# @name ragResponse
+POST {{AZURE_OPENAI_ENDPOINT}}/openai/deployments/{{AZURE_OPENAI_GPT4O_DEPLOYMENT_NAME}}/chat/completions?api-version={{AZURE_OPENAI_GPT4O_API_VERSION}}
+Content-Type: application/json
+api-key: {{AZURE_OPENAI_API_KEY}}
+
+{
+    "messages": [
+        {
+            "role": "system",
+            "content": "You are an Azure OpenAI expert assistant. Answer user questions using the provided context from the knowledge base. Always cite which document(s) you're referencing. If the context doesn't contain enough information, say so clearly."
+        },
+        {
+            "role": "user",
+            "content": "Question: How can I reduce costs when using Azure OpenAI?\n\nContext from Knowledge Base:\n[Document 1 - Cost Management]\nAzure OpenAI Cost Management: Monitor token usage with Azure Monitor. Set up billing alerts and quotas. Use prompt engineering to reduce token consumption. Choose appropriate models for your use case. Implement caching strategies. Use batch processing when possible. Consider using smaller models for simple tasks.\n\n[Document 2 - Performance]\nAzure OpenAI Performance Best Practices: Use connection pooling to reduce latency. Implement exponential backoff for rate limiting. Cache responses when possible. Monitor token usage to optimize costs. Use streaming for real-time applications. Consider model selection based on your use case - GPT-4o for complex reasoning, GPT-3.5 for faster responses.\n\nPlease provide a comprehensive answer based on the retrieved context."
+        }
+    ],
+    "max_tokens": 1000,
+    "temperature": 0.7
+}
+
+##########################################################################
+### Step 4: Follow-up Question (Demonstrates Conversational RAG)
+##########################################################################
+
+### Ask a follow-up question about security
+# @name securityQueryEmbedding
+POST {{AZURE_OPENAI_ENDPOINT}}/openai/deployments/{{AZURE_OPENAI_EMBEDDINGS_DEPLOYMENT_NAME}}/embeddings?api-version={{AZURE_OPENAI_EMBEDDINGS_API_VERSION}}
+Content-Type: application/json
+api-key: {{AZURE_OPENAI_API_KEY}}
+
+{
+    "input": "What security measures should I implement for Azure OpenAI?",
+    "model": "{{AZURE_OPENAI_EMBEDDINGS_DEPLOYMENT_NAME}}"
+}
+
+###
+
+### Generate follow-up answer focusing on security
+# @name securityRagResponse
+POST {{AZURE_OPENAI_ENDPOINT}}/openai/deployments/{{AZURE_OPENAI_GPT4O_DEPLOYMENT_NAME}}/chat/completions?api-version={{AZURE_OPENAI_GPT4O_API_VERSION}}
+Content-Type: application/json
+api-key: {{AZURE_OPENAI_API_KEY}}
+
+{
+    "messages": [
+        {
+            "role": "system",
+            "content": "You are an Azure OpenAI expert assistant. Answer user questions using the provided context from the knowledge base. Always cite which document(s) you're referencing. If the context doesn't contain enough information, say so clearly."
+        },
+        {
+            "role": "user",
+            "content": "Question: What security measures should I implement for Azure OpenAI?\n\nContext from Knowledge Base:\n[Document 1 - Security]\nAzure OpenAI Security Best Practices: Use Azure AD authentication and managed identities. Implement proper RBAC controls. Enable content filtering to prevent harmful content. Use private endpoints for network isolation. Regularly rotate API keys. Monitor access logs for suspicious activity. Implement input validation and sanitization.\n\nPlease provide a comprehensive answer based on the retrieved context."
+        }
+    ],
+    "max_tokens": 1000,
+    "temperature": 0.7
+}
+
+##########################################################################
+### 📊 Variable Reference Examples
+##########################################################################
+
+### You can reference the captured responses like this:
+### - Document 1 embedding: {{doc1Embedding.response.body.data.0.embedding}}
+### - Document 2 embedding: {{doc2Embedding.response.body.data.0.embedding}}
+### - Document 3 embedding: {{doc3Embedding.response.body.data.0.embedding}}
+### - Query embedding: {{queryEmbedding.response.body.data.0.embedding}}
+### - RAG answer: {{ragResponse.response.body.choices.0.message.content}}
+### - Security answer: {{securityRagResponse.response.body.choices.0.message.content}}
+
+##########################################################################
+### 📊 RAG Workflow Summary
+##########################################################################
+
+### This example demonstrated:
+### 
+### ✅ Document Embedding: Converting text to vector representations using # @name
+### ✅ Variable Capture: Using REST Client's # @name syntax for response capture
+### ✅ Context Retrieval: Manually selecting relevant documents (simplified for demo)
+### ✅ Augmented Generation: Using retrieved context with LLM
+### ✅ Conversational RAG: Handling follow-up questions with fresh context
+###
+### 🎯 Key REST Client Concepts Covered:
+### - # @name variableName syntax for response capture
+### - {{variableName.response.body.field}} syntax for variable reference
+### - Simulating multi-step RAG workflows with variable passing
+### - Real-world RAG implementation patterns
+###
+### 🚀 Production Considerations:
+### - Use a proper vector database (Azure AI Search, Pinecone, Weaviate)
+### - Implement actual similarity search algorithms
+### - Add metadata filtering and hybrid search
+### - Optimize embedding models and similarity thresholds
+### - Implement caching and performance optimizations
+### - Add evaluation metrics for retrieval quality
+
+### 🎓 Try Different Questions:
+### - "How can I improve performance of my Azure OpenAI application?"
+### - "What are the security best practices for Azure OpenAI?"
+### - "How do I monitor costs and usage in Azure OpenAI?"
+### - "What should I consider when choosing between GPT models?"
+
+### 💡 Note on Similarity Search:
+### In a production RAG system, Step 3 would include:
+### 1. Calculate cosine similarity between query and document embeddings
+### 2. Rank documents by similarity score
+### 3. Select top-k most relevant documents
+### 4. Use those as context for generation
+### 
+### For this REST Client demo, we simplified by manually selecting
+### the most relevant documents based on the question topic.
