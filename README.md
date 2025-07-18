@@ -26,7 +26,7 @@ This comprehensive guide will teach you how to:
 ## 📁 Project Structure
 
 ```
-ai-context-evolution-workshop/
+ai-models-and-context-evolution/
 ├── http-examples/                  # REST Client examples showing progression
 │   ├── 01_static_context_via_system_prompts.http
 │   ├── 02_dynamic_context_multi_turn_conversation.http
@@ -46,8 +46,6 @@ ai-context-evolution-workshop/
 │   └── sample_knowledge_base_document.txt
 ├── assets/
 │   └── conference_session_data_sample.json
-├── .vscode/
-│   └── settings.json
 ├── .env                            # Environment variables (create this!)
 ├── requirements.txt
 └── README.md
