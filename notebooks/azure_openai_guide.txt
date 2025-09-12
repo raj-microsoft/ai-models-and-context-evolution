@@ -1,0 +1,97 @@
+
+# Azure OpenAI Service Best Practices Guide
+
+## Overview
+Azure OpenAI Service provides enterprise-grade access to OpenAI models like GPT-4, GPT-3.5, and DALL-E with Azure's security and compliance.
+
+## Key Features
+- Enterprise security and compliance (SOC 2, GDPR, HIPAA)
+- Private networking with Virtual Networks
+- Managed identity and RBAC integration
+- Built-in content filtering and monitoring
+- Multiple model deployments in same resource
+
+## Function Calling Best Practices
+
+### 1. Tool Design Principles
+- Keep functions focused and single-purpose
+- Use descriptive names and clear descriptions
+- Include comprehensive parameter documentation
+- Handle errors gracefully with try-catch blocks
+
+### 2. Performance Optimization
+- Use parallel tool calls when possible
+- Minimize API round-trips
+- Cache function results when appropriate
+- Monitor token usage and costs
+
+### 3. Security Considerations
+- Validate all function parameters
+- Implement rate limiting for external API calls
+- Use environment variables for sensitive data
+- Log function calls for audit purposes
+
+## Cost Management
+- Monitor token usage across deployments
+- Use content filtering to reduce unwanted calls
+- Implement caching strategies
+- Consider model selection based on use case
+
+## Regional Availability
+- GPT-4o: Available in East US, West Europe, South Central US
+- GPT-3.5-turbo: Available in most regions
+- DALL-E 3: Limited regional availability
+- Check Azure portal for latest regional support
+
+## Monitoring and Logging
+- Enable diagnostic settings
+- Use Application Insights for detailed telemetry
+- Set up alerts for quota limits
+- Monitor for content filtering triggers
+
+## Common Issues and Solutions
+
+### High Latency
+- Check regional proximity to deployment
+- Review concurrent request limits
+- Consider connection pooling
+- Optimize prompt length
+
+### Rate Limiting
+- Implement exponential backoff
+- Use multiple deployments for load distribution
+- Monitor requests per minute (RPM) limits
+- Consider provisioned throughput for predictable workloads
+
+### Content Filtering
+- Review and adjust content filtering policies
+- Test prompts that might trigger filters
+- Implement fallback responses
+- Monitor filtering logs
+
+## Integration Patterns
+
+### Direct API Usage
+- REST API calls for simple integrations
+- SDK usage for complex applications
+- Streaming for real-time responses
+
+### Function Calling Workflows
+1. Define functions with clear schemas
+2. Handle multiple tool calls efficiently
+3. Implement proper error handling
+4. Provide meaningful function responses
+
+### Assistants API
+- Use for stateful conversations
+- Leverage Vector Stores for document search
+- Implement file upload capabilities
+- Monitor assistant performance
+
+## Troubleshooting Checklist
+- ✅ API key and endpoint configured correctly
+- ✅ Deployment name matches configuration
+- ✅ API version supports required features
+- ✅ Regional quotas not exceeded
+- ✅ Network connectivity to Azure
+- ✅ Content filtering policies appropriate
