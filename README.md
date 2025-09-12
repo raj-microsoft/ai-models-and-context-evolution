@@ -1,5 +1,7 @@
 # AI Context Evolution Workshop: The Journey to MCP
 
+hello world + macaw
+
 This workshop demonstrates the evolution of providing context to AI models, from basic chat to function calling, and how we arrived at the need for the Model Context Protocol (MCP). This is a **foundational learning experience** that prepares you for the next step: diving deep into MCP itself.
 
 ## 🎯 Workshop Objectives
