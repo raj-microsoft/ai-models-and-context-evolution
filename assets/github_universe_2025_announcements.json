@@ -1,0 +1,140 @@
+{
+  "event": "GitHub Universe 2025",
+  "description": "GitHub Universe 2025 marked a transformative moment in software development, introducing agentic development—where developers and AI agents collaborate seamlessly throughout the software lifecycle.",
+  "major_announcements": [
+    {
+      "id": 1,
+      "title": "Agent HQ",
+      "category": "AI Agents",
+      "description": "A unified workspace where developers can create, manage, and collaborate with multiple AI agents across the entire software lifecycle. Empowers users to assign and track agent tasks, monitor interactions, and apply collaborative best practices within teams.",
+      "key_features": [
+        "Create and manage multiple AI agents",
+        "Track agent tasks and interactions",
+        "Team collaboration features",
+        "Integration with partner agents (Anthropic Claude, OpenAI Codex)"
+      ],
+      "status": "Generally Available",
+      "impact": "Revolutionizes how developers work with AI agents by providing centralized management and collaboration"
+    },
+    {
+      "id": 2,
+      "title": "Enterprise Agent Control Plane",
+      "category": "Enterprise Security",
+      "description": "A new layer that gives enterprises robust governance and policy enforcement for managing AI/agent fleets and custom agents securely and compliantly.",
+      "key_features": [
+        "Fleet management for AI agents",
+        "Monitoring and observability",
+        "Hosting agents with identity controls",
+        "Auditability for regulated environments",
+        "Policy enforcement"
+      ],
+      "status": "Public Preview",
+      "impact": "Enables enterprises to adopt AI agents at scale while maintaining security and compliance"
+    },
+    {
+      "id": 3,
+      "title": "Multi-Model Agent Support",
+      "category": "AI Models",
+      "description": "Copilot and Agent HQ now support additional AI models, giving developers flexibility in agent selection for different tasks.",
+      "supported_models": [
+        "Anthropic Claude",
+        "Google Gemini",
+        "OpenAI o1-preview",
+        "OpenAI o1-mini",
+        "OpenAI Codex"
+      ],
+      "status": "Generally Available",
+      "impact": "Provides developers choice and flexibility to use the best model for their specific use case"
+    },
+    {
+      "id": 4,
+      "title": "Plan Mode in VS Code",
+      "category": "Developer Tools",
+      "description": "A new VS Code feature that enables developers and agents to collaboratively plan, organize, and execute multi-step projects directly within the editor.",
+      "key_features": [
+        "Multi-step project planning",
+        "Collaborative planning with AI agents",
+        "Transparent decision-making",
+        "Integrated project execution"
+      ],
+      "status": "Generally Available",
+      "impact": "Enhances developer control and transparency over coding and implementation decisions"
+    },
+    {
+      "id": 5,
+      "title": "Agentic Code Review",
+      "category": "Code Quality",
+      "description": "Copilot leverages CodeQL and LLM intelligence for deeper code reviews—detecting vulnerabilities and suggesting fixes automatically.",
+      "key_features": [
+        "Automated vulnerability detection",
+        "AI-powered fix suggestions",
+        "CodeQL integration",
+        "Focus on security and code quality"
+      ],
+      "status": "Generally Available",
+      "impact": "Enables developers to focus on higher-level concerns while AI handles routine security checks"
+    },
+    {
+      "id": 6,
+      "title": "Copilot Metrics Dashboard",
+      "category": "Enterprise Management",
+      "description": "Enterprises can track Copilot usage, adoption, user metrics, model distribution, and code contributions across organizations.",
+      "key_features": [
+        "Usage and adoption tracking",
+        "User metrics",
+        "Model distribution analytics",
+        "Code contribution insights",
+        "Organization-wide visibility"
+      ],
+      "status": "Generally Available",
+      "impact": "Brings data-driven oversight and governance to AI-powered development"
+    },
+    {
+      "id": 7,
+      "title": "GitHub Code Quality",
+      "category": "Code Quality",
+      "description": "Provides org-wide visibility into code maintainability, reliability, and test coverage, helping teams improve overall code health.",
+      "key_features": [
+        "Code maintainability metrics",
+        "Reliability tracking",
+        "Test coverage visibility",
+        "Organization-wide insights",
+        "Repository health monitoring"
+      ],
+      "status": "Public Preview",
+      "impact": "Helps teams systematically improve code quality across all repositories"
+    }
+  ],
+  "statistics": {
+    "total_developers": "180 million+",
+    "copilot_adoption": "Nearly 80% of new users try Copilot in their first week",
+    "leading_languages": ["TypeScript", "Python"],
+    "sessions": "100+ sessions, panels, and demos",
+    "ai_project_growth": "Booming growth in AI-related projects"
+  },
+  "key_themes": [
+    "Agentic Development: Seamless collaboration between developers and AI agents",
+    "Enterprise Governance: Security and compliance at scale",
+    "Developer Choice: Multiple AI models and flexible tools",
+    "Code Quality: Automated reviews and organization-wide insights",
+    "Community & Learning: Certifications, training, and developer experiences"
+  ],
+  "official_resources": [
+    {
+      "title": "GitHub Universe 2025 Schedule",
+      "url": "https://github.blog/news-insights/company-news/your-guide-to-github-universe-2025-the-schedule-just-launched/"
+    },
+    {
+      "title": "GitHub Universe Recap",
+      "url": "https://github.com/events/universe/recap"
+    },
+    {
+      "title": "GitHub Universe Main Page",
+      "url": "https://githubuniverse.com/"
+    },
+    {
+      "title": "Developer Innovation at GitHub Universe 2025",
+      "url": "https://azure.microsoft.com/en-us/blog/github-universe-2025-where-developer-innovation-took-center-stage/"
+    }
+  ]
+}
