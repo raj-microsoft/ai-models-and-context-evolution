@@ -43,9 +43,11 @@ ai-models-and-context-evolution/
 │   ├── 04_parallel_multiple_tool_execution.ipynb
 │   ├── 05_assistants_api_with_vector_stores.ipynb
 │   ├── 06_complete_rag_pipeline_deep_dive.ipynb
+│   ├── 07_github_universe_2025_qa.ipynb
 │   └── sample_knowledge_base_document.txt
 ├── assets/
-│   └── conference_session_data_sample.json
+│   ├── conference_session_data_sample.json
+│   └── github_universe_2025_announcements.json
 ├── .env                            # Environment variables (create this!)
 ├── requirements.txt
 └── README.md
@@ -106,6 +108,7 @@ pip install -r requirements.txt
 
 - Start with `notebooks/01_context_methods_and_prompting.ipynb`
 - Follow the sequence to build understanding step-by-step
+- Try `notebooks/07_github_universe_2025_qa.ipynb` for a real-world Q&A application
 
 ## 📚 Learning Path
 
@@ -134,6 +137,10 @@ pip install -r requirements.txt
 - `notebooks/05_assistants_api_with_vector_stores.ipynb`
 - `08_complete_rag_workflow_with_embeddings.http`
 - `notebooks/06_complete_rag_pipeline_deep_dive.ipynb`
+
+### Bonus: Real-World Applications
+
+- `notebooks/07_github_universe_2025_qa.ipynb` - Interactive Q&A about GitHub Universe 2025 announcements
 
 ### Phase 5: Ready for MCP!
 
