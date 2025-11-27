@@ -1,0 +1,283 @@
+# 03 - Moderne Function Calling (AANBEVOLEN)
+#
+# ✅ Dit is de HUIDIGE best practice voor function calling
+# 🚀 Voordelen van het moderne formaat:
+#    - Meerdere gelijktijdige tool-aanroepen mogelijk
+#    - Betere prestaties en lagere kosten
+#    - Schoner response-formaat met tool_call_id tracking
+#    - Toekomstbestendig en actief onderhouden
+#
+# Modern Formaat Gebruikt:
+# - "tools" parameter (array van tool-definities)
+# - "tool_choice" parameter (bepaalt wanneer tools te gebruiken)
+# - Response bevat "tool_calls" array met unieke ID's
+#
+# 🇳🇱 Nederlandse Voorbeelden:
+# Dit voorbeeld gebruikt Nederlandse steden en context
+
+### Voorbeeld 1: Weer en Tijd in Amsterdam
+POST {{AZURE_OPENAI_ENDPOINT}}openai/deployments/{{AZURE_OPENAI_GPT4O_DEPLOYMENT_NAME}}/chat/completions?api-version={{AZURE_OPENAI_GPT4O_API_VERSION}}
+Content-Type: application/json
+api-key: {{AZURE_OPENAI_API_KEY}}
+
+{
+  "messages": [
+    {
+      "role": "user",
+      "content": "Hoe is het weer in Amsterdam en hoe laat is het daar?"
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "get_current_weather",
+        "description": "Verkrijg het huidige weer in een bepaalde locatie",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "location": {
+              "type": "string",
+              "description": "De stad en land, bijv. Amsterdam, Nederland"
+            },
+            "unit": {
+              "type": "string",
+              "enum": ["celsius", "fahrenheit"],
+              "description": "Temperatuureenheid"
+            }
+          },
+          "required": ["location"]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "get_current_time",
+        "description": "Verkrijg de huidige tijd voor een specifieke tijdzone",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "timezone": {
+              "type": "string",
+              "description": "De tijdzone, bijv. Europa/Amsterdam, Europa/Londen"
+            }
+          },
+          "required": ["timezone"]
+        }
+      }
+    }
+  ],
+  "tool_choice": "auto",
+  "max_tokens": 800,
+  "temperature": 0.7
+}
+
+###
+
+### Voorbeeld 2: Meerdere Nederlandse Steden Vergelijken
+POST {{AZURE_OPENAI_ENDPOINT}}openai/deployments/{{AZURE_OPENAI_GPT4O_DEPLOYMENT_NAME}}/chat/completions?api-version={{AZURE_OPENAI_GPT4O_API_VERSION}}
+Content-Type: application/json
+api-key: {{AZURE_OPENAI_API_KEY}}
+
+{
+  "messages": [
+    {
+      "role": "user",
+      "content": "Vergelijk het weer tussen Amsterdam, Rotterdam en Utrecht vandaag"
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "get_current_weather",
+        "description": "Verkrijg het huidige weer in een bepaalde locatie",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "location": {
+              "type": "string",
+              "description": "De stad, bijv. Amsterdam, Rotterdam, Utrecht"
+            },
+            "unit": {
+              "type": "string",
+              "enum": ["celsius", "fahrenheit"],
+              "description": "Temperatuureenheid (celsius standaard voor Nederland)"
+            }
+          },
+          "required": ["location"]
+        }
+      }
+    }
+  ],
+  "tool_choice": "auto",
+  "max_tokens": 1000,
+  "temperature": 0.7
+}
+
+###
+
+### Voorbeeld 3: Reis van Amsterdam naar Rotterdam
+POST {{AZURE_OPENAI_ENDPOINT}}openai/deployments/{{AZURE_OPENAI_GPT4O_DEPLOYMENT_NAME}}/chat/completions?api-version={{AZURE_OPENAI_GPT4O_API_VERSION}}
+Content-Type: application/json
+api-key: {{AZURE_OPENAI_API_KEY}}
+
+{
+  "messages": [
+    {
+      "role": "user",
+      "content": "Ik plan een reis van Amsterdam naar Rotterdam. Kun je me het weer in beide steden vertellen en hoe lang de treinreis duurt?"
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "get_current_weather",
+        "description": "Verkrijg het huidige weer in een bepaalde locatie",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "location": {
+              "type": "string",
+              "description": "De stad, bijv. Amsterdam, Rotterdam"
+            },
+            "unit": {
+              "type": "string",
+              "enum": ["celsius", "fahrenheit"],
+              "description": "Temperatuureenheid"
+            }
+          },
+          "required": ["location"]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "get_travel_info",
+        "description": "Verkrijg reisinformatie tussen twee locaties",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "from_location": {
+              "type": "string",
+              "description": "Vertreklocatie"
+            },
+            "to_location": {
+              "type": "string",
+              "description": "Bestemmingslocatie"
+            },
+            "travel_mode": {
+              "type": "string",
+              "enum": ["trein", "auto", "fiets"],
+              "description": "Vervoersmiddel (trein is populair in Nederland)"
+            }
+          },
+          "required": ["from_location", "to_location"]
+        }
+      }
+    }
+  ],
+  "tool_choice": "auto",
+  "max_tokens": 1000,
+  "temperature": 0.7
+}
+
+###
+
+### Voorbeeld 4: Schiphol Vliegveld Informatie
+POST {{AZURE_OPENAI_ENDPOINT}}openai/deployments/{{AZURE_OPENAI_GPT4O_DEPLOYMENT_NAME}}/chat/completions?api-version={{AZURE_OPENAI_GPT4O_API_VERSION}}
+Content-Type: application/json
+api-key: {{AZURE_OPENAI_API_KEY}}
+
+{
+  "messages": [
+    {
+      "role": "user",
+      "content": "Ik vlieg morgen vanaf Schiphol naar Londen. Wat is het weer bij Schiphol en in Londen, en hoe lang duurt de vlucht?"
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "get_current_weather",
+        "description": "Verkrijg het huidige weer in een bepaalde locatie",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "location": {
+              "type": "string",
+              "description": "De stad of luchthaven, bijv. Schiphol, Londen"
+            },
+            "unit": {
+              "type": "string",
+              "enum": ["celsius", "fahrenheit"],
+              "description": "Temperatuureenheid"
+            }
+          },
+          "required": ["location"]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "get_flight_info",
+        "description": "Verkrijg vluchtinformatie tussen luchthavens",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "departure_airport": {
+              "type": "string",
+              "description": "Vertrek luchthaven code of naam"
+            },
+            "arrival_airport": {
+              "type": "string",
+              "description": "Aankomst luchthaven code of naam"
+            }
+          },
+          "required": ["departure_airport", "arrival_airport"]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "get_time_zone",
+        "description": "Verkrijg huidige tijd en tijdzone informatie",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "location": {
+              "type": "string",
+              "description": "De locatie voor tijdzone info"
+            }
+          },
+          "required": ["location"]
+        }
+      }
+    }
+  ],
+  "tool_choice": "auto",
+  "max_tokens": 1000,
+  "temperature": 0.7
+}
+
+###
+
+# 💡 Best Practices voor Nederlandse Context:
+#
+# 1. Gebruik Celsius: Nederland gebruikt het metrieke stelsel
+# 2. Tijdzone: Europa/Amsterdam (CET/CEST)
+# 3. Transport: Trein (NS) is populair voor intercity reizen
+# 4. Luchthaven: Schiphol (AMS) is de hoofdluchthaven
+# 5. Steden: Amsterdam, Rotterdam, Den Haag, Utrecht, Eindhoven
+#
+# Voordelen van het Moderne Formaat:
+# - Meerdere tools tegelijk aanroepen
+# - Schonere responses
+# - Betere foutafhandeling
+# - Toekomstbestendig
