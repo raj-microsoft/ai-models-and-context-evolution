@@ -101,7 +101,7 @@ Azure OpenAI Service biedt enterprise-grade toegang tot OpenAI-modellen zoals GP
 ### Datacenter Locatie
 - West Europe datacenter is gelegen in Amsterdam
 - Optimaal voor Nederlandse klanten qua latentie
-- Voldoet aan EU-datareguleringsveris
+- Voldoet aan EU-datareguleringsvereis
 
 ### GDPR Compliance
 - Azure OpenAI is volledig GDPR-compliant
